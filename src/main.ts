@@ -99,10 +99,18 @@ ActionKit.run(async ({ options, logger, config, deviceHostClient, consoleActionC
     validatedInputs.requestTimeout,
   );
   if (validatedInputs.uninstallApp) {
+    logger.info('Uninstalling app', { appPath });
     try {
       await deviceClient.uninstallApp(DOGU_DEVICE_SERIAL, appPath);
+      logger.info('App uninstalled');
     } catch (error) {
       logger.warn('Failed to uninstall app', { error: errorify(error) });
     }
   }
+  logger.info('Installing app', { appPath });
+  await deviceClient.installApp(DOGU_DEVICE_SERIAL, appPath);
+  logger.info('App installed');
+  logger.info('Run app', { appPath });
+  await deviceClient.runApp(DOGU_DEVICE_SERIAL, appPath);
+  logger.info('App runned');
 });

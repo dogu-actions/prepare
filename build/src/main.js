@@ -99,12 +99,20 @@ action_kit_1.ActionKit.run(async ({ options, logger, config, deviceHostClient, c
     const appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, appVersionValue);
     await (0, gamium_kit_1.tryToQuitGamiumApp)(logger, deviceClient, deviceHostClient, validatedInputs.gamiumServerPort, DOGU_DEVICE_SERIAL, validatedInputs.retryCount, validatedInputs.retryInterval, validatedInputs.requestTimeout);
     if (validatedInputs.uninstallApp) {
+        logger.info('Uninstalling app', { appPath });
         try {
             await deviceClient.uninstallApp(DOGU_DEVICE_SERIAL, appPath);
+            logger.info('App uninstalled');
         }
         catch (error) {
             logger.warn('Failed to uninstall app', { error: (0, action_kit_1.errorify)(error) });
         }
     }
+    logger.info('Installing app', { appPath });
+    await deviceClient.installApp(DOGU_DEVICE_SERIAL, appPath);
+    logger.info('App installed');
+    logger.info('Run app', { appPath });
+    await deviceClient.runApp(DOGU_DEVICE_SERIAL, appPath);
+    logger.info('App runned');
 });
 //# sourceMappingURL=main.js.map
