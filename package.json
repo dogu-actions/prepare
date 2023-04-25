@@ -16,8 +16,8 @@
   },
   "types": "./build/src/main.d.ts",
   "dependencies": {
-    "@dogu-tech/action-kit": "git+https://github.com/dogu-team/typescript-action-kit.git#development",
-    "@dogu-tech/gamium-kit": "git+https://github.com/dogu-team/typescript-gamium-kit.git#development"
+    "@dogu-tech/action-kit": "development",
+    "@dogu-tech/gamium-kit": "development"
   },
   "devDependencies": {
     "@types/node": "18.15.11",
