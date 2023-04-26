@@ -4,7 +4,7 @@ const action_kit_1 = require("@dogu-tech/action-kit");
 const gamium_kit_1 = require("@dogu-tech/gamium-kit");
 action_kit_1.ActionKit.run(async ({ options, logger, config, deviceHostClient, consoleActionClient, deviceClient }) => {
     const { DOGU_DEVICE_WORKSPACE_ON_HOST_PATH, DOGU_PROJECT_ID, DOGU_ACTION_INPUTS, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL } = options;
-    const validatedInputs = await (0, action_kit_1.transformAndValidate)(action_kit_1.PrepareInputs, DOGU_ACTION_INPUTS);
+    const validatedInputs = await (0, action_kit_1.transformAndValidate)(action_kit_1.PrepareInputs, JSON.parse(DOGU_ACTION_INPUTS));
     const cleanInput = config.input('clean');
     if (validatedInputs.clean == null) {
         if (cleanInput.required) {

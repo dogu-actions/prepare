@@ -3,7 +3,7 @@ import { tryToQuitGamiumApp } from '@dogu-tech/gamium-kit';
 
 ActionKit.run(async ({ options, logger, config, deviceHostClient, consoleActionClient, deviceClient }) => {
   const { DOGU_DEVICE_WORKSPACE_ON_HOST_PATH, DOGU_PROJECT_ID, DOGU_ACTION_INPUTS, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL } = options;
-  const validatedInputs = await transformAndValidate(PrepareInputs, DOGU_ACTION_INPUTS);
+  const validatedInputs = await transformAndValidate(PrepareInputs, JSON.parse(DOGU_ACTION_INPUTS));
   const cleanInput = config.input('clean');
   if (validatedInputs.clean == null) {
     if (cleanInput.required) {
