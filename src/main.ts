@@ -23,11 +23,12 @@ ActionKit.run(async ({ options, logger, input, deviceHostClient, consoleActionCl
   const retryCount = input.get<number>('retryCount');
   const retryInterval = input.get<number>('retryInterval');
   const requestTimeout = input.get<number>('requestTimeout');
+  const branchOrTag = input.get<string>('branchOrTag');
   const optionsConfig = await OptionsConfig.load();
   if (optionsConfig.get('localUserProject.use', false)) {
     logger.info('Using local user project...');
   } else {
-    await checkoutProject(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_WORKSPACE_PATH, DOGU_PROJECT_ID, DOGU_RUN_TYPE, clean);
+    await checkoutProject(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_WORKSPACE_PATH, DOGU_PROJECT_ID, branchOrTag, clean);
   }
   const appPath = await downloadApp(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, currentPlatformAppVersion);
   await tryToQuitGamiumApp(logger, deviceClient, deviceHostClient, gamiumServerPort, DOGU_DEVICE_SERIAL, retryCount, retryInterval, requestTimeout);

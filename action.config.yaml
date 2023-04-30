@@ -29,5 +29,9 @@ inputs:
     description: request timeout
     default: 1
     required: false
+  branchOrTag:
+    description: branch or tag to download
+    default: main
+    required: false
 runs:
   main: build/src/main.js
