@@ -10,7 +10,7 @@ inputs:
     description: app version to download and install
     required: true
   gamiumServerPort:
-    description: gamium server port
+    description: gamium engine port
     default: 50061
     required: false
   uninstallApp:
@@ -18,16 +18,20 @@ inputs:
     default: false
     required: false
   retryCount:
-    description: retry count to gamium server connection
+    description: retry count to gamium engine connection
     default: 2
     required: false
   retryInterval:
-    description: retry interval to gamium server connection
+    description: retry interval to gamium engine connection
     default: 1
     required: false
   requestTimeout:
     description: request timeout
     default: 1
+    required: false
+  branchOrTag:
+    description: branch or tag to download
+    default: main
     required: false
 runs:
   main: build/src/main.js

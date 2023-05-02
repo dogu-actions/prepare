@@ -2,104 +2,39 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const action_kit_1 = require("@dogu-tech/action-kit");
 const gamium_kit_1 = require("@dogu-tech/gamium-kit");
-action_kit_1.ActionKit.run(async ({ options, logger, config, deviceHostClient, consoleActionClient, deviceClient }) => {
-    const { DOGU_DEVICE_WORKSPACE_ON_HOST_PATH, DOGU_PROJECT_ID, DOGU_ACTION_INPUTS, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL } = options;
-    const validatedInputs = await (0, action_kit_1.transformAndValidate)(action_kit_1.PrepareInputs, JSON.parse(DOGU_ACTION_INPUTS));
-    const cleanInput = config.input('clean');
-    if (validatedInputs.clean == null) {
-        if (cleanInput.required) {
-            throw new Error('Clean input is required');
-        }
-        else {
-            if (typeof cleanInput.default !== 'boolean') {
-                throw new Error('Clean input default value is not a boolean');
-            }
-            validatedInputs.clean = cleanInput.default;
-        }
-    }
-    const { appVersion } = validatedInputs;
-    let appVersionValue = '';
-    if (typeof appVersion === 'number') {
-        appVersionValue = String(appVersion);
-    }
-    else if (typeof appVersion === 'string') {
-        appVersionValue = appVersion;
-    }
-    else if (typeof appVersion === 'object') {
-        const value = Reflect.get(appVersion, DOGU_DEVICE_PLATFORM);
-        if (typeof value !== 'string') {
-            throw new Error(`Invalid app version type: ${(0, action_kit_1.stringify)(appVersion)}`);
-        }
-        appVersionValue = value;
-    }
-    if (!appVersionValue) {
+action_kit_1.ActionKit.run(async ({ options, logger, input, deviceHostClient, consoleActionClient, deviceClient }) => {
+    const { DOGU_DEVICE_WORKSPACE_PATH, DOGU_PROJECT_ID, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL, DOGU_RUN_TYPE } = options;
+    const clean = input.get('clean');
+    const appVersion = input.get('appVersion');
+    if (!(0, action_kit_1.isAppVersion)(appVersion)) {
         throw new Error(`Invalid app version: ${(0, action_kit_1.stringify)(appVersion)}`);
     }
-    if (validatedInputs.gamiumServerPort == null) {
-        const gamiumServerPortInput = config.input('gamiumServerPort');
-        if (gamiumServerPortInput.required) {
-            throw new Error('Gamium server port input is required');
-        }
-        else {
-            if (typeof gamiumServerPortInput.default !== 'number') {
-                throw new Error('Gamium server port input default value is not a number');
+    const currentPlatformAppVersion = typeof appVersion === 'object'
+        ? (() => {
+            const platformAppVersion = Reflect.get(appVersion, DOGU_DEVICE_PLATFORM);
+            if (!platformAppVersion) {
+                throw new Error(`Invalid app version: ${(0, action_kit_1.stringify)(appVersion)} for platform: ${DOGU_DEVICE_PLATFORM}`);
             }
-            validatedInputs.gamiumServerPort = gamiumServerPortInput.default;
-        }
+            return platformAppVersion;
+        })()
+        : String(appVersion);
+    const gamiumServerPort = input.get('gamiumServerPort');
+    const uninstallApp = input.get('uninstallApp');
+    const retryCount = input.get('retryCount');
+    const retryInterval = input.get('retryInterval');
+    const requestTimeout = input.get('requestTimeout');
+    const branchOrTag = input.get('branchOrTag');
+    const optionsConfig = await action_kit_1.OptionsConfig.load();
+    if (optionsConfig.get('localUserProject.use', false)) {
+        logger.info('Using local user project...');
     }
-    if (validatedInputs.uninstallApp == null) {
-        const uninstallAppInput = config.input('uninstallApp');
-        if (uninstallAppInput.required) {
-            throw new Error('Uninstall app input is required');
-        }
-        else {
-            if (typeof uninstallAppInput.default !== 'boolean') {
-                throw new Error('Uninstall app input default value is not a boolean');
-            }
-            validatedInputs.uninstallApp = uninstallAppInput.default;
-        }
+    else {
+        await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_WORKSPACE_PATH, DOGU_PROJECT_ID, branchOrTag, clean);
     }
-    if (validatedInputs.retryCount == null) {
-        const retryCountInput = config.input('retryCount');
-        if (retryCountInput.required) {
-            throw new Error('Retry count input is required');
-        }
-        else {
-            if (typeof retryCountInput.default !== 'number') {
-                throw new Error('Retry count input default value is not a number');
-            }
-            validatedInputs.retryCount = retryCountInput.default;
-        }
-    }
-    if (validatedInputs.retryInterval == null) {
-        const retryIntervalInput = config.input('retryInterval');
-        if (retryIntervalInput.required) {
-            throw new Error('Retry interval input is required');
-        }
-        else {
-            if (typeof retryIntervalInput.default !== 'number') {
-                throw new Error('Retry interval input default value is not a number');
-            }
-            validatedInputs.retryInterval = retryIntervalInput.default;
-        }
-    }
-    if (validatedInputs.requestTimeout == null) {
-        const requestTimeoutInput = config.input('requestTimeout');
-        if (requestTimeoutInput.required) {
-            throw new Error('Request timeout input is required');
-        }
-        else {
-            if (typeof requestTimeoutInput.default !== 'number') {
-                throw new Error('Request timeout input default value is not a number');
-            }
-            validatedInputs.requestTimeout = requestTimeoutInput.default;
-        }
-    }
-    await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_WORKSPACE_ON_HOST_PATH, DOGU_PROJECT_ID, validatedInputs.clean);
-    const appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, appVersionValue);
-    await (0, gamium_kit_1.tryToQuitGamiumApp)(logger, deviceClient, deviceHostClient, validatedInputs.gamiumServerPort, DOGU_DEVICE_SERIAL, validatedInputs.retryCount, validatedInputs.retryInterval, validatedInputs.requestTimeout);
-    if (validatedInputs.uninstallApp) {
-        logger.info('Uninstalling app', { appPath });
+    const appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, currentPlatformAppVersion);
+    await (0, gamium_kit_1.tryToQuitGamiumApp)(logger, deviceClient, deviceHostClient, gamiumServerPort, DOGU_DEVICE_SERIAL, retryCount, retryInterval, requestTimeout);
+    if (uninstallApp) {
+        logger.info('Uninstalling app...', { appPath });
         try {
             await deviceClient.uninstallApp(DOGU_DEVICE_SERIAL, appPath);
             logger.info('App uninstalled');
@@ -108,10 +43,10 @@ action_kit_1.ActionKit.run(async ({ options, logger, config, deviceHostClient, c
             logger.warn('Failed to uninstall app', { error: (0, action_kit_1.errorify)(error) });
         }
     }
-    logger.info('Installing app', { appPath });
+    logger.info('Installing app...', { appPath });
     await deviceClient.installApp(DOGU_DEVICE_SERIAL, appPath);
     logger.info('App installed');
-    logger.info('Run app', { appPath });
+    logger.info('Run app...', { appPath });
     await deviceClient.runApp(DOGU_DEVICE_SERIAL, appPath);
     logger.info('App runned');
 });
