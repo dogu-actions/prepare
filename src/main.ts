@@ -18,7 +18,7 @@ ActionKit.run(async ({ options, logger, input, deviceHostClient, consoleActionCl
           return platformAppVersion;
         })()
       : String(appVersion);
-  const gamiumServerPort = input.get<number>('gamiumServerPort');
+  const gamiumEnginePort = input.get<number>('gamiumEnginePort');
   const uninstallApp = input.get<boolean>('uninstallApp');
   const retryCount = input.get<number>('retryCount');
   const retryInterval = input.get<number>('retryInterval');
@@ -31,7 +31,7 @@ ActionKit.run(async ({ options, logger, input, deviceHostClient, consoleActionCl
     await checkoutProject(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_WORKSPACE_PATH, DOGU_PROJECT_ID, branchOrTag, clean);
   }
   const appPath = await downloadApp(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, currentPlatformAppVersion);
-  await tryToQuitGamiumApp(logger, deviceClient, deviceHostClient, gamiumServerPort, DOGU_DEVICE_SERIAL, retryCount, retryInterval, requestTimeout);
+  await tryToQuitGamiumApp(logger, deviceClient, deviceHostClient, gamiumEnginePort, DOGU_DEVICE_SERIAL, retryCount, retryInterval, requestTimeout);
   if (uninstallApp) {
     logger.info('Uninstalling app...', { appPath });
     try {
