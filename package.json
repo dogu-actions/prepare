@@ -1,9 +1,8 @@
 {
   "name": "@dogu-actions/prepare",
   "version": "0.0.0",
-  "description": "",
-  "license": "MIT",
-  "author": "dogu",
+  "license": "SEE LICENSE IN https://github.com/dogu-team/dogu/blob/main/LICENSE.md",
+  "author": "Dogu Technologies",
   "main": "./build/src/main.js",
   "scripts": {
     "build": "tsc -b",
@@ -20,13 +19,15 @@
     "@dogu-tech/action-kit": "development",
     "@dogu-tech/common": "development",
     "@dogu-tech/console-action": "development",
+    "@dogu-tech/console-dest": "development",
     "@dogu-tech/console-gamium": "development",
+    "@dogu-tech/dest": "development",
     "@dogu-tech/device-client": "development",
     "@dogu-tech/device-client-common": "development",
     "@dogu-tech/device-interface": "development",
     "@dogu-tech/env-tools": "development",
-    "@dogu-tech/gamium-kit": "development",
     "@dogu-tech/node": "development",
+    "@dogu-tech/toolkit": "development",
     "@dogu-tech/types": "development"
   },
   "devDependencies": {
@@ -39,5 +40,7 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "url": "https://github.com/dogu-team/dogu",
+  "packageManager": "yarn@3.2.3"
 }

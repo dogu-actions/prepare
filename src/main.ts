@@ -1,5 +1,5 @@
 import { ActionKit, AppVersion, checkoutProject, downloadApp, errorify, isAppVersion, OptionsConfig, stringify } from '@dogu-tech/action-kit';
-import { tryToQuitGamiumApp } from '@dogu-tech/gamium-kit';
+import { tryToQuitGamiumApp } from '@dogu-tech/toolkit';
 
 ActionKit.run(async ({ options, logger, input, deviceHostClient, consoleActionClient, deviceClient }) => {
   const { DOGU_DEVICE_WORKSPACE_PATH, DOGU_PROJECT_ID, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL, DOGU_RUN_TYPE } = options;
