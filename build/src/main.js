@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const action_kit_1 = require("@dogu-tech/action-kit");
 const toolkit_1 = require("@dogu-tech/toolkit");
+const path_1 = __importDefault(require("path"));
 action_kit_1.ActionKit.run(async ({ options, logger, input, deviceHostClient, consoleActionClient, deviceClient }) => {
     const { DOGU_ROUTINE_WORKSPACE_PATH, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL, DOGU_RUN_TYPE } = options;
     const clean = input.get('clean');
@@ -24,12 +28,17 @@ action_kit_1.ActionKit.run(async ({ options, logger, input, deviceHostClient, co
     const retryInterval = input.get('retryInterval');
     const requestTimeout = input.get('requestTimeout');
     const branchOrTag = input.get('branchOrTag');
+    const checkoutPath = input.get('checkoutPath');
+    const checkoutUrl = input.get('checkoutUrl');
+    logger.info('resolve checkout path... from', { DOGU_ROUTINE_WORKSPACE_PATH, checkoutPath });
+    const resolvedCheckoutPath = path_1.default.resolve(DOGU_ROUTINE_WORKSPACE_PATH, checkoutPath);
+    logger.info('resolved checkout path', { resolvedCheckoutPath });
     const optionsConfig = await action_kit_1.OptionsConfig.load();
     if (optionsConfig.get('localUserProject.use', false)) {
         logger.info('Using local user project...');
     }
     else {
-        await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, DOGU_ROUTINE_WORKSPACE_PATH, branchOrTag, clean);
+        await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, resolvedCheckoutPath, branchOrTag, clean, checkoutUrl);
     }
     const appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, currentPlatformAppVersion);
     await (0, toolkit_1.tryToQuitGamiumApp)(logger, deviceClient, deviceHostClient, gamiumEnginePort, DOGU_DEVICE_SERIAL, DOGU_DEVICE_PLATFORM, retryCount, retryInterval, requestTimeout);
