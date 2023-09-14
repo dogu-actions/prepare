@@ -28,13 +28,14 @@ action_kit_1.ActionKit.run(async ({ options, logger, input, deviceHostClient, co
     const retryCount = input.get('retryCount');
     const retryInterval = input.get('retryInterval');
     const requestTimeout = input.get('requestTimeout');
-    const branchOrTag = input.get('branchOrTag');
+    const branch = input.get('branch');
+    const tag = input.get('tag');
     const checkoutPath = input.get('checkoutPath');
     const checkoutUrl = input.get('checkoutUrl');
     logger.info('resolve checkout path... from', { DOGU_ROUTINE_WORKSPACE_PATH, checkoutPath });
     const resolvedCheckoutPath = path_1.default.resolve(DOGU_ROUTINE_WORKSPACE_PATH, checkoutPath);
     logger.info('resolved checkout path', { resolvedCheckoutPath });
-    await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, resolvedCheckoutPath, branchOrTag, clean, checkoutUrl);
+    await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, resolvedCheckoutPath, clean, branch, tag, checkoutUrl);
     const appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, currentPlatformAppVersion);
     await (0, toolkit_1.tryToQuitGamiumApp)(logger, deviceClient, deviceHostClient, gamiumEnginePort, DOGU_DEVICE_SERIAL, DOGU_DEVICE_PLATFORM, retryCount, retryInterval, requestTimeout);
     if (uninstallApp) {
