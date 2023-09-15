@@ -10,19 +10,10 @@ action_kit_1.ActionKit.run(async ({ options, logger, input, deviceHostClient, co
     const { DOGU_ROUTINE_WORKSPACE_PATH, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, DOGU_DEVICE_SERIAL } = options;
     const clean = input.get('clean');
     const appVersion = input.get('appVersion');
+    const appPackageName = input.get('appPackageName');
     if (!(0, action_kit_1.isAppVersion)(appVersion)) {
         throw new Error(`Invalid app version: ${(0, action_kit_1.stringify)(appVersion)}`);
     }
-    const resolvedAppVersion = appVersion || process.env.DOGU_APP_VERSION || '';
-    const currentPlatformAppVersion = typeof resolvedAppVersion === 'object'
-        ? (() => {
-            const platformAppVersion = Reflect.get(resolvedAppVersion, DOGU_DEVICE_PLATFORM);
-            if (!platformAppVersion) {
-                throw new Error(`Invalid app version: ${(0, action_kit_1.stringify)(resolvedAppVersion)} for platform: ${DOGU_DEVICE_PLATFORM}`);
-            }
-            return platformAppVersion;
-        })()
-        : String(resolvedAppVersion);
     const gamiumEnginePort = input.get('gamiumEnginePort');
     const uninstallApp = input.get('uninstallApp');
     const retryCount = input.get('retryCount');
@@ -36,7 +27,33 @@ action_kit_1.ActionKit.run(async ({ options, logger, input, deviceHostClient, co
     const resolvedCheckoutPath = path_1.default.resolve(DOGU_ROUTINE_WORKSPACE_PATH, checkoutPath);
     logger.info('resolved checkout path', { resolvedCheckoutPath });
     await (0, action_kit_1.checkoutProject)(logger, consoleActionClient, deviceHostClient, resolvedCheckoutPath, clean, branch, tag, checkoutUrl);
-    const appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, currentPlatformAppVersion);
+    let appPath = '';
+    const resolvedAppVersion = appVersion || process.env.DOGU_APP_VERSION || '';
+    const resolvedAppPackageName = appPackageName || process.env.DOGU_APP_PACKAGE_NAME || '';
+    if (resolvedAppPackageName) {
+        const currentPlatformPackageName = typeof resolvedAppPackageName === 'object'
+            ? (() => {
+                const platformAppVersion = Reflect.get(resolvedAppPackageName, DOGU_DEVICE_PLATFORM);
+                if (!platformAppVersion) {
+                    throw new Error(`Invalid app package name: ${(0, action_kit_1.stringify)(resolvedAppPackageName)} for platform: ${DOGU_DEVICE_PLATFORM}`);
+                }
+                return platformAppVersion;
+            })()
+            : String(resolvedAppPackageName);
+        appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, { appPackageName: currentPlatformPackageName });
+    }
+    else if (resolvedAppVersion) {
+        const currentPlatformAppVersion = typeof resolvedAppVersion === 'object'
+            ? (() => {
+                const platformAppVersion = Reflect.get(resolvedAppVersion, DOGU_DEVICE_PLATFORM);
+                if (!platformAppVersion) {
+                    throw new Error(`Invalid app version: ${(0, action_kit_1.stringify)(resolvedAppVersion)} for platform: ${DOGU_DEVICE_PLATFORM}`);
+                }
+                return platformAppVersion;
+            })()
+            : String(resolvedAppVersion);
+        appPath = await (0, action_kit_1.downloadApp)(logger, consoleActionClient, deviceHostClient, DOGU_DEVICE_PLATFORM, DOGU_HOST_WORKSPACE_PATH, { appVersion: currentPlatformAppVersion });
+    }
     await (0, toolkit_1.tryToQuitGamiumApp)(logger, deviceClient, deviceHostClient, gamiumEnginePort, DOGU_DEVICE_SERIAL, DOGU_DEVICE_PLATFORM, retryCount, retryInterval, requestTimeout);
     if (uninstallApp) {
         logger.info('Uninstalling app...', { appPath });
