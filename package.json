@@ -24,7 +24,6 @@
     "@dogu-tech/dest": "development",
     "@dogu-tech/device-client": "development",
     "@dogu-tech/device-client-common": "development",
-    "@dogu-tech/device-interface": "development",
     "@dogu-tech/env-tools": "development",
     "@dogu-tech/node": "development",
     "@dogu-tech/toolkit": "development",
