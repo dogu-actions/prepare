@@ -79,8 +79,8 @@ __metadata:
   linkType: hard
 
 "@dogu-tech/action-kit@npm:development":
-  version: 0.0.54-development.3
-  resolution: "@dogu-tech/action-kit@npm:0.0.54-development.3"
+  version: 0.0.54-development.4
+  resolution: "@dogu-tech/action-kit@npm:0.0.54-development.4"
   dependencies:
     "@dogu-tech/action-common": development
     "@dogu-tech/common": development
@@ -96,7 +96,7 @@ __metadata:
     lodash: 4.17.21
     reflect-metadata: 0.1.13
     yaml: 2.2.1
-  checksum: effe664c2abb7c2d1ed1c1da641dfd57b18b1f5dd01a6da1e16d3af9a0c1818e5f44c17dabd8ec618fe1b2eb0e11769d8bd9a8f4f161823b56117dc6ada708c2
+  checksum: a0039eb4176d54c1ef027d4b552ced09e76d91f8d531506e85dbcc9964de224f5a8c9cc59081687f442cb2b716f2ba3b1fc7513e9311f29945cd1f858f84f8e4
   languageName: node
   linkType: hard
 
@@ -254,8 +254,8 @@ __metadata:
   linkType: hard
 
 "@dogu-tech/toolkit@npm:development":
-  version: 0.0.55-development.3
-  resolution: "@dogu-tech/toolkit@npm:0.0.55-development.3"
+  version: 0.0.55-development.4
+  resolution: "@dogu-tech/toolkit@npm:0.0.55-development.4"
   dependencies:
     "@dogu-tech/common": development
     "@dogu-tech/console-gamium": development
@@ -273,7 +273,7 @@ __metadata:
     lodash: 4.17.21
     reflect-metadata: 0.1.13
     webdriverio: 7.32.0
-  checksum: cd6c2880c07b2dc470461bd6ddffddcb83339eb9e1566d0e73f30004dce5ce4de6ba2227c6a8eba9feba24f2671bf25680a35f4c9c8fb06d84972d5dca58fded
+  checksum: 98080c16c9d5eadfba89c9e501265236e2f5c4c81f15a1ccf56cc45afcc32146c09837fb4c2b513455396316eead26cdf8ee4f42a8ceacd63e93c5d0edc3eeb1
   languageName: node
   linkType: hard
 
